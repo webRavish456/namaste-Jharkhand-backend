@@ -1,0 +1,29 @@
+import mongoose from 'mongoose';
+
+const blogDetailSchema = new mongoose.Schema({
+  blogId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Blog',
+    required: true
+  },
+  blogDetailBanner: {
+    type: String,
+    required: true
+  },
+  blogDetailDescription: {
+    type: String,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['active', 'inactive'],
+    default: 'active'
+  }
+}, {
+  timestamps: true
+});
+
+const BlogDetail = mongoose.model('BlogDetail', blogDetailSchema);
+
+export default BlogDetail;
+
