@@ -53,10 +53,10 @@ export const createExploreJharkhand = async (req, res) => {
   try {
     const { title, description, status } = req.body;
 
-    const image = req.imageUrls?.image || null;
+    const exploreImage = req.imageUrls?.exploreImage || null;
 
     const newPlace = new ExploreJharkhand({
-      image,
+      exploreImage,
       title,
       description,
       status: status || 'active'
@@ -97,7 +97,7 @@ export const updateExploreJharkhand = async (req, res) => {
     if (title) place.title = title;
     if (description) place.description = description;
     if (status) place.status = status;
-    if (req.imageUrls?.image) place.image = req.imageUrls.image;
+    if (req.imageUrls?.exploreImage) place.exploreImage = req.imageUrls.exploreImage;
 
     await place.save();
 

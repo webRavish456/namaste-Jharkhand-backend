@@ -28,7 +28,7 @@ const storage = new CloudinaryStorage({
 const upload = multer({
   storage: storage,
   limits: { fileSize: 10 * 1024 * 1024 },
-}).single('image');
+}).single('exploreImage');
 
 const uploadExploreJharkhand = (req, res, next) => {
   upload(req, res, async (err) => {
@@ -44,7 +44,7 @@ const uploadExploreJharkhand = (req, res, next) => {
 
     if (file) {
       req.imageUrls = {
-        image: file.path
+        exploreImage: file.path
       };
     }
 
