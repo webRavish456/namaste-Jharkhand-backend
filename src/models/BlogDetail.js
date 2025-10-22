@@ -14,6 +14,17 @@ const blogDetailSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  date: {
+    type: Date,
+    required: true
+  },
+  category: {
+    type: String,
+    required: true
+  },
+  tags: [{
+    type: String
+  }],
   status: {
     type: String,
     enum: ['active', 'inactive'],
