@@ -8,7 +8,6 @@ const blogDetailSchema = new mongoose.Schema({
   },
   blogDetailBanner: {
     type: String,
-    required: true
   },
   blogDetailDescription: {
     type: String,

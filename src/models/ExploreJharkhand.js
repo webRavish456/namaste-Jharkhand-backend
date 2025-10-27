@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 const exploreJharkhandSchema = new mongoose.Schema({
   exploreImage: {
     type: String,
-    required: true
   },
   title: {
     type: String,
