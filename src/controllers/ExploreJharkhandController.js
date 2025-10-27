@@ -1,14 +1,82 @@
 import ExploreJharkhand from '../models/ExploreJharkhand.js';
 
-// Get all explore jharkhand places
+// Get explore jharkhand statistics for dashboard
+export const getExploreJharkhandStats = async (req, res) => {
+  try {
+    // Get total places count
+    const totalPlaces = await ExploreJharkhand.countDocuments();
+    
+    // Get places from last 30 days
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const recentPlaces = await ExploreJharkhand.countDocuments({
+      createdAt: { $gte: thirtyDaysAgo }
+    });
+    
+    // Calculate percentage change
+    const previousPeriodStart = new Date();
+    previousPeriodStart.setDate(previousPeriodStart.getDate() - 60);
+    const previousPeriodEnd = new Date();
+    previousPeriodEnd.setDate(previousPeriodEnd.getDate() - 30);
+    
+    const previousPeriodPlaces = await ExploreJharkhand.countDocuments({
+      createdAt: { 
+        $gte: previousPeriodStart,
+        $lte: previousPeriodEnd
+      }
+    });
+    
+    const placeChange = previousPeriodPlaces > 0 
+      ? Math.round(((recentPlaces - previousPeriodPlaces) / previousPeriodPlaces) * 100)
+      : recentPlaces > 0 ? 100 : 0;
+    
+    res.status(200).json({
+      status: 'success',
+      message: 'Explore Jharkhand stats fetched successfully',
+      data: {
+        totalPlaces,
+        recentPlaces,
+        placeChange: placeChange >= 0 ? `+${placeChange}%` : `${placeChange}%`,
+        changeType: placeChange >= 0 ? 'positive' : 'negative'
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching explore jharkhand stats:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to fetch explore jharkhand stats',
+      error: error.message
+    });
+  }
+};
+
+// Get all explore jharkhand places with pagination
 export const getAllExploreJharkhand = async (req, res) => {
   try {
-    const places = await ExploreJharkhand.find().sort({ createdAt: -1 });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+    const skip = (page - 1) * limit;
+
+    const places = await ExploreJharkhand.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+    
+    const totalPlaces = await ExploreJharkhand.countDocuments();
+    const totalPages = Math.ceil(totalPlaces / limit);
+    const hasMore = page < totalPages;
     
     res.status(200).json({
       status: 'success',
       message: 'Explore Jharkhand places fetched successfully',
-      data: places
+      data: places,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalPlaces,
+        hasMore,
+        limit
+      }
     });
   } catch (error) {
     console.error('Error fetching places:', error);

@@ -14,7 +14,8 @@ import {
   getBlogById, 
   createBlog, 
   updateBlog, 
-  deleteBlog 
+  deleteBlog,
+  getBlogStats
 } from '../controllers/BlogController.js';
 
 import { 
@@ -30,7 +31,8 @@ import {
   getExploreJharkhandById, 
   createExploreJharkhand, 
   updateExploreJharkhand, 
-  deleteExploreJharkhand 
+  deleteExploreJharkhand,
+  getExploreJharkhandStats
 } from '../controllers/ExploreJharkhandController.js';
 
 import { 
@@ -46,7 +48,9 @@ import {
   getEnquiryById, 
   createEnquiry, 
   updateEnquiryStatus, 
-  deleteEnquiry 
+  deleteEnquiry,
+  getEnquiryAnalytics,
+  getDashboardStats
 } from '../controllers/EnquiryController.js';
 
 import { 
@@ -67,6 +71,9 @@ router.route('/upload-editor-image')
 router.route('/blogs')
   .get(getAllBlogs)
   .post(verifyToken, uploadBlog, createBlog);
+
+router.route('/blogs/stats')
+  .get(verifyToken, getBlogStats);
 
 router.route('/blogs/:id')
   .get(getBlogById)
@@ -94,6 +101,9 @@ router.route('/explore-jharkhand')
   .get(getAllExploreJharkhand)
   .post(verifyToken, uploadExploreJharkhand, createExploreJharkhand);
 
+router.route('/explore-jharkhand/stats')
+  .get(verifyToken, getExploreJharkhandStats);
+
 router.route('/explore-jharkhand/:id')
   .get(getExploreJharkhandById)
   .put(verifyToken, uploadExploreJharkhand, updateExploreJharkhand)
@@ -119,6 +129,12 @@ router.route('/explore-jharkhand-details/:id')
 router.route('/enquiries')
   .get(verifyToken, getAllEnquiries)
   .post(createEnquiry);
+
+router.route('/enquiries/analytics')
+  .get(verifyToken, getEnquiryAnalytics);
+
+router.route('/dashboard/stats')
+  .get(verifyToken, getDashboardStats);
 
 router.route('/enquiries/:id')
   .get(verifyToken, getEnquiryById)

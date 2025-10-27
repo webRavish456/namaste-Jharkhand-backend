@@ -1,5 +1,55 @@
 import Blog from '../models/Blog.js';
 
+// Get blog statistics for dashboard
+export const getBlogStats = async (req, res) => {
+  try {
+    // Get total blogs count
+    const totalBlogs = await Blog.countDocuments();
+    
+    // Get blogs from last 30 days
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const recentBlogs = await Blog.countDocuments({
+      createdAt: { $gte: thirtyDaysAgo }
+    });
+    
+    // Calculate percentage change
+    const previousPeriodStart = new Date();
+    previousPeriodStart.setDate(previousPeriodStart.getDate() - 60);
+    const previousPeriodEnd = new Date();
+    previousPeriodEnd.setDate(previousPeriodEnd.getDate() - 30);
+    
+    const previousPeriodBlogs = await Blog.countDocuments({
+      createdAt: { 
+        $gte: previousPeriodStart,
+        $lte: previousPeriodEnd
+      }
+    });
+    
+    const blogChange = previousPeriodBlogs > 0 
+      ? Math.round(((recentBlogs - previousPeriodBlogs) / previousPeriodBlogs) * 100)
+      : recentBlogs > 0 ? 100 : 0;
+    
+    res.status(200).json({
+      status: 'success',
+      message: 'Blog stats fetched successfully',
+      data: {
+        totalBlogs,
+        recentBlogs,
+        blogChange: blogChange >= 0 ? `+${blogChange}%` : `${blogChange}%`,
+        changeType: blogChange >= 0 ? 'positive' : 'negative'
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching blog stats:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to fetch blog stats',
+      error: error.message
+    });
+  }
+};
+
 // Get all blogs
 export const getAllBlogs = async (req, res) => {
   try {
