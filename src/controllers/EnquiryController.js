@@ -51,10 +51,10 @@ export const getEnquiryById = async (req, res) => {
 // Create new enquiry (from contact form)
 export const createEnquiry = async (req, res) => {
   try {
-    const { name, email, phone, message } = req.body;
+    const { name, email, phone, subject, message } = req.body;
 
     // Validation
-    if (!name || !email || !phone || !message) {
+    if (!name || !email || !phone || !subject || !message) {
       return res.status(400).json({
         status: 'error',
         message: 'All fields are required'
@@ -65,6 +65,7 @@ export const createEnquiry = async (req, res) => {
       name,
       email,
       phone,
+      subject,
       message
     });
 
