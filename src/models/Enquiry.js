@@ -19,7 +19,6 @@ const enquirySchema = new mongoose.Schema({
   },
   message: {
     type: String,
-    required: true
   },
   status: {
     type: String,
