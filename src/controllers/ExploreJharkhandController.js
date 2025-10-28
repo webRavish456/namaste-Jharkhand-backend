@@ -50,33 +50,16 @@ export const getExploreJharkhandStats = async (req, res) => {
   }
 };
 
-// Get all explore jharkhand places with pagination
+// Get all explore jharkhand places
 export const getAllExploreJharkhand = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 6;
-    const skip = (page - 1) * limit;
-
     const places = await ExploreJharkhand.find()
-      .sort({ createdAt: 1 })
-      .skip(skip)
-      .limit(limit);
-    
-    const totalPlaces = await ExploreJharkhand.countDocuments();
-    const totalPages = Math.ceil(totalPlaces / limit);
-    const hasMore = page < totalPages;
+      .sort({ createdAt: 1 });
     
     res.status(200).json({
       status: 'success',
       message: 'Explore Jharkhand places fetched successfully',
-      data: places,
-      pagination: {
-        currentPage: page,
-        totalPages,
-        totalPlaces,
-        hasMore,
-        limit
-      }
+      data: places
     });
   } catch (error) {
     console.error('Error fetching places:', error);
